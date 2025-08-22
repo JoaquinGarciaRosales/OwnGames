@@ -113,6 +113,7 @@ def slotmachine(Money, Score):
                     print("You lose $",betN, ":(")
                     if Money == 0:
                         return Money
+                    break
                 else:
                     print("You won ",wins, "times! , for a total mult of ",multi,".")
                     Money += betN*multi
