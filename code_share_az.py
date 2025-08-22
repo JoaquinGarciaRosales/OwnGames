@@ -139,34 +139,31 @@ def coin(Money, Score):
                     election = int(risk)
                     if election in(1,2):
                         house_num = random.randint(1,2)
-                        if election == house_num:
-                            match house_num:
-                                case 1:
+                        match house_num:
+                            case 1:
+                                if election == house_num:
                                     print("Theres a match with heads you won")
                                     Money += betN
                                     if Money >= Score:
                                         return Money
-                                    break
-                                case 2:
-                                    print("Theres a match with tails you won")
-                                    Money += betN
-                                    if Money >= Score:
-                                        return Money
-                                    break
-                        else:
-                            match house_num:
-                                case 1:
+                                else:
                                     print("The House beated you with heads")
                                     Money -= betN
                                     if Money == 0:
                                         return Money
-                                    break
-                                case 2:
+                                break
+                            case 2:
+                                if election == house_num:
+                                    print("Theres a match with tails you won")
+                                    Money += betN
+                                    if Money >= Score:
+                                        return Money
+                                else:
                                     print("The House beated you with tails")
                                     Money -= betN
                                     if Money == 0:
                                         return Money
-                                    break
+                                break
             else:
                 break
 
