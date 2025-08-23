@@ -4,14 +4,29 @@
 #Nota personal, implementar hacer el type de "rules" para mostrar las reglas
 #Nota personal, se puede hacer módulo de la validación inicial pero con ¿Rules?
 import random
+import os
 
-# Game UI
-def ui():
+#Function clear screen
+def clear():
+    os.system("cls" if os.name == "nt" else "clear")
+# Function to continue
+def cont():
     while True:
+        cont = input("Press ENTER to continue: ")
+        if cont == "":
+            break
+# Game UI
+def ui(money,score):
+    clear()
+    while True:
+        print(" __________________________________________________________________________________________________________")
+        print("|Current Balance: $",money, "     You need to get: ",(score-money), "more      ", "Score needed: $",score,)
+        print("|__________________________________________________________________________________________________________")
         break
 # El más complicado
 def blackjack(Money, Score):
     while True:
+        ui(Money,Score)
         bet= input("Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave:  : ")
         if bet == "NO":
             return Money
@@ -43,12 +58,14 @@ def blackjack(Money, Score):
                 #Segunda carta jugador
                 carta2J= card()
                 print("Player Cards: ", carta1J, carta2J)
+                input("Hit, stay or doble")
             else:
                 break
 
 # Tercero en empezar a programar y el tercer juego ¿Quién lo diría?
 def slotmachine(Money, Score):
     while True:
+        ui(Money, Score)
         bet = input("Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
         if bet == "NO":
             return Money
@@ -113,21 +130,105 @@ def slotmachine(Money, Score):
                     print("You lose $",betN, ":(")
                     if Money == 0:
                         return Money
+                    cont()
                     break
                 else:
                     print("You won ",wins, "times! , for a total mult of ",multi,".")
                     Money += betN*multi
                     print("You won $",(betN*multi),"Cogratulations")
+                    cont()
                     if Money >= Score:
                         return Money
                     break
             else:
                 break
+# Dados, basado en el juego de feria donde el 7 tenía un diablito
+def victory(Money,betN,matcher,mult):
+    print("There's a match on ",matcher," you won")
+    Money += betN*mult
+    print("You won $",betN*mult, ":)")
+    return Money
 
+def dices(Money,Score):
+    while True:
+        ui(Money, Score)
+        bet= input("Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
+        if bet == "NO":
+            return Money
+        while True:
+            if bet.isdigit() and (int(bet) > 0) and (int(bet)<=Money):
+                betN = int(bet)
+                user_inp = input("Select your number: ")
+                if user_inp.isdigit() and 1 < int(user_inp) < 13:
+                    user_num= int(user_inp)
+                    dice1 = random.randint(1,6)
+                    dice2 = random.randint(1,6)
+                    print("Your number: ",user_inp,"        Dice 1: ",dice1,"   Dice 2: ",dice2)
+                    print("Result:      ",(dice1+dice2))
+                    if user_num == (dice1+dice2):
+                        match user_num:
+                            case 2:
+                                mult=34
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 3:
+                                mult=16
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 4:
+                                mult=10
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 5:
+                                mult=7
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 6:
+                                mult=5
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 7:
+                                mult=4
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 8:
+                                mult=5
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 9:
+                                mult=7
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 10:
+                                mult=10
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 11:
+                                mult=16
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                            case 12:
+                                mult=34
+                                Money=victory(Money,betN,user_num,mult)
+                                cont()
+                        if Money >= Score:
+                            return Money
+                        break
+                    else:
+                        print("There is no match, the house won")
+                        print("You lose $",betN, ":(")
+                        Money -= betN
+                        if Money == 0:
+                            return Money
+                        cont()
+                        break
+            else:
+                break
 # Primero el juego más fácil // ¿Listo? 1.0
 
 def coin(Money, Score):
     while True:
+        ui(Money, Score)
         bet= input("Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
         if bet == "NO":
             return Money
@@ -135,35 +236,43 @@ def coin(Money, Score):
             if bet.isdigit() and (int(bet) > 0) and (int(bet)<=Money):
                 betN = int(bet)
                 risk = input("Choose 1 or 2 (1 is heads, 2 is tails) : ")
-                if risk.isdigit():
+                if risk.isdigit() and (int(risk) in (1,2)):
                     election = int(risk)
-                    if election in(1,2):
-                        house_num = random.randint(1,2)
-                        match house_num:
-                            case 1:
-                                if election == house_num:
-                                    print("Theres a match with heads you won")
-                                    Money += betN
-                                    if Money >= Score:
-                                        return Money
-                                else:
-                                    print("The House beated you with heads")
-                                    Money -= betN
-                                    if Money == 0:
-                                        return Money
-                                break
-                            case 2:
-                                if election == house_num:
-                                    print("Theres a match with tails you won")
-                                    Money += betN
-                                    if Money >= Score:
-                                        return Money
-                                else:
-                                    print("The House beated you with tails")
-                                    Money -= betN
-                                    if Money == 0:
-                                        return Money
-                                break
+                    house_num = random.randint(1,2)
+                    print("Your selection: ",election,"      Result: ",house_num)
+                    match house_num:
+                        case 1:
+                            if election == house_num:
+                                print("Theres a match with heads you won")
+                                Money += betN
+                                print("You won $",betN, ":)")
+                                cont()
+                                if Money >= Score:
+                                    return Money
+                            else:
+                                print("The House beated you with heads")
+                                Money -= betN
+                                print("You lose $",betN, ":(")
+                                if Money == 0:
+                                    return Money
+                                cont()
+                            break
+                        case 2:
+                            if election == house_num:
+                                print("Theres a match with tails you won")
+                                Money += betN
+                                print("You won $",betN, ":)")
+                                cont()
+                                if Money >= Score:
+                                    return Money
+                            else:
+                                print("The House beated you with tails")
+                                Money -= betN
+                                print("You lose $",betN, ":(")
+                                if Money == 0:
+                                    return Money
+                                cont()
+                            break
             else:
                 break
 
@@ -182,29 +291,35 @@ def difficulty(Balance):
                 DSelector= int(Dificulty)
                 match DSelector:
                     case 1:
-                        print("Easy")
+                        print("You  choose Easy Difficulty")
                         Score_to_beat=64*Balance
+                        cont()
                         return Score_to_beat
                     case 2:
-                        print("Medium")
+                        print("You  choose Medium")
                         Score_to_beat=256*Balance
+                        cont()
                         return Score_to_beat
                     case 3:
-                        print("Hard")
+                        print("You  choose Hard")
                         Score_to_beat=1024*Balance
+                        cont()
                         return Score_to_beat
                     case _:
                         continue
 
 def gameloop(Balance, Score):
     while True:
+        ui(Balance, Score)
         Game = input("Now you are entering the game zone, type: 1 for BlackJack, 2 for Roulette, 3 for Slots, 4 for Dices, 5 for Coin: ")
         if Game.isdigit():
             gameN = int(Game)
             match gameN:
                 case 1:
+                    ui(Balance, Score)
                     print("Now you are entering the Blackjack zone, good luck :)")
                     print("Rules: Dealer Stops at 17 you may risk it until you have 21. ")
+                    cont()
                     Balance = blackjack(Balance, Score)
                     if Balance == 0:
                         print("You are broke now, go back to home")
@@ -216,8 +331,10 @@ def gameloop(Balance, Score):
                 case 2:
                     print("Now you are entering the Roulette zone, good luck :)")
                 case 3:
+                    ui(Balance, Score)
                     print("Now you are entering the Slot Machine zone, good luck :)")
                     print("Rules: +++: pays the bet // ***: pays 5 times the bet // ^^^: pays 25 times the bet // $$$: pays 200 times the bet. You win if 3 symbols match horizontally or via the diagonal that passes the middle (5 chances in total). You can win multiple times.")
+                    cont()
                     Balance = slotmachine(Balance, Score)
                     if Balance == 0:
                         print("You are broke now, go back to home")
@@ -227,10 +344,23 @@ def gameloop(Balance, Score):
                         break
                     print("You managed to get out with: $",Balance)
                 case 4:
+                    ui(Balance, Score)
                     print("Now you are entering the Dices zone, good luck :)")
+                    print("House will roll 2 dices, you may select a number between 2 an 12, numbers pay more according to their chances ")
+                    cont()
+                    Balance = dices(Balance, Score)
+                    if Balance == 0:
+                        print("You are broke now, go back to home")
+                        break
+                    elif Balance >= Score:
+                        print("You win, the casino is broke now :(")
+                        break
+                    print("You managed to get out with: $",Balance)
                 case 5:
+                    ui(Balance, Score)
                     print("Now you are entering the Coin zone , good luck :)")
                     print("Rules: A match is a win, diferent faces you loose.")
+                    cont()
                     Balance = coin(Balance, Score)
                     if Balance == 0:
                         print("You are broke now, go back to home")
@@ -247,3 +377,4 @@ def main():
     beat_score = difficulty(Balance)
     Balance = gameloop(Balance,beat_score)
 main()
+
