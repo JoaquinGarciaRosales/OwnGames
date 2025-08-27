@@ -21,44 +21,169 @@ def ui(money,score):
     while True:
         print(" __________________________________________________________________________________________________________")
         print("|Current Balance: $",money, "     You need to get: ",(score-money), "more      ", "Score needed: $",score,)
-        print("|__________________________________________________________________________________________________________")
+        print("|__________________________________________________________________________________________________________\n")
         break
-# El más complicado
+
+# El más complicado BLACKJACK
+# Dictionary
+dict_values = {"A": 11, "J": 10, "Q": 10, "K": 10}
+# Function to values
+def func_values(array):
+    aces=0
+    value=0
+    for char in array:
+        charN = char[:-1]
+        if charN in dict_values:
+            value += dict_values[charN]
+            if charN == "A":
+                aces+=1
+        elif charN in {"2","3","4","5","6","7","8","9","10"}:
+            value += int(charN)
+    while value > 21 and aces > 0:
+        value-=10
+        aces-=1
+    return value
+# Function printer
+def func_printer(array,dealer_in):
+    for i, char in enumerate(array, start=1):
+        if char != "":
+            if dealer_in == 1:
+                print(f"Dealer card {i}: {char}")
+            else:
+                print(f"Player card {i}: {char}")
+
+#Main to Blackjack
 def blackjack(Money, Score):
     while True:
+        decks_in = input("\nSelect the amount of decks you are going to play with (an int between 5 and 8): ")
+        if decks_in.isdigit() and 4 < int(decks_in) < 9:
+            decks = int(decks_in)
+            break
+    while True:
+        def build_deck(n_decks):
+            suits = ["♠", "♥", "♦", "♣"]
+            value = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+            baraja = [f"{v}{p}" for p in suits for v in value]
+            total_deck = baraja * n_decks
+            random.shuffle(total_deck)
+            return total_deck
+        crafted_deck = build_deck(decks)
         ui(Money,Score)
-        bet= input("Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave:  : ")
+        bet= input("Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
         if bet == "NO":
             return Money
         while True:
             if bet.isdigit() and (int(bet) > 0) and (int(bet)<=Money):
                 betN = int(bet)
-                #Función cartas
-                def card():
-                    card = random.randint(1,13)
-                    if card in(1,11,12,13):
-                        match card:
-                            case 1:
-                                card_char = "A"
-                            case 11:
-                                card_char = "J"
-                            case 12:
-                                card_char = "Q"
-                            case 13:
-                                card_char = "K"
-                    else:
-                        card_char = card
-                    return card_char
-
+                dealer_ar = [""] * 16
+                player_ar = [""] * 20
                 #Carta dealer
-                carta1D = card()
-                print ("Dealer card ", carta1D)
+                dealer_ar[0]=crafted_deck.pop()
+                #Función imprimir
+                print("")
+                func_printer(dealer_ar,1)
+                print("")
                 #Primera carta jugador
-                carta1J= card()
+                player_ar[0]=crafted_deck.pop()
                 #Segunda carta jugador
-                carta2J= card()
-                print("Player Cards: ", carta1J, carta2J)
-                input("Hit, stay or doble")
+                player_ar[1]=crafted_deck.pop()
+                #función imprimir
+                func_printer(player_ar,0)
+                valueP=func_values(player_ar)
+                if valueP != 21:
+                    print("\n1 for hit.\n2 for double.\n3 for stay.\n")
+                while True:
+                    if valueP == 21:
+                        break
+                    election = input("Hit, double or stay: ")
+                    if election.isdigit() and (int(election) in (1,2,3)):
+                        action = int(election)
+                        match action:
+                            case 1:
+                                i=0
+                                while action != 3:
+                                    print("\n1 for hit.\n3 for stay.\n")
+                                    player_ar[i+2]= crafted_deck.pop()
+                                    valueP = func_values(player_ar)
+                                    print("")
+                                    func_printer(dealer_ar,1)
+                                    print("")
+                                    func_printer(player_ar,0)
+                                    print("")
+                                    i+=1
+                                    if valueP >= 21:
+                                        break
+                                    else:
+                                        while True:
+                                            election = input("Hit or stay: ")
+                                            if election.isdigit() and (int(election) in (1,3)):
+                                                action = int(election)
+                                                break
+                                break
+
+                            case 2:
+                                betN=betN*2
+                                player_ar[2] = crafted_deck.pop()
+                                break
+                            case 3:
+                                valueP = func_values(player_ar)
+                                break
+
+                if valueP > 21:
+                    print("")
+                    func_printer(dealer_ar,1)
+                    print("")
+                    func_printer(player_ar,0)
+                    print("")
+                    Money -= betN
+                    print("You overpassed, you lost: $",betN)
+                    if Money == 0:
+                        return Money
+                    cont()
+                    break
+
+                else:
+
+                    j=0
+                    valueD=0
+                    while valueD < 17:
+                        dealer_ar[j+1]= crafted_deck.pop()
+                        valueD= func_values(dealer_ar)
+                        j+=1
+
+                    print("")
+                    func_printer(dealer_ar,1)
+                    print("")
+                    func_printer(player_ar,0)
+                    print("")
+                    if valueP==21:
+                        print("\nBlackjack!\n")
+                    if valueD > 21:
+                        Money += betN
+                        print("Dealer overpassed, you won: $",betN)
+                        if Money >= Score:
+                            return Money
+                        cont()
+                        break
+                    elif valueD > valueP:
+                        Money -= betN
+                        print("Dealer beated you with",valueD,"you lost: $",betN)
+                        if Money == 0:
+                            return Money
+                        cont()
+                        break
+                    elif valueD == valueP:
+                        print("There is a Tie!")
+                        cont()
+                        break
+                    else:
+                        Money += betN
+                        print("You beated the dealer, you won: $",betN)
+                        if Money >= Score:
+                            return Money
+                        cont()
+                        break
+
             else:
                 break
 
@@ -122,6 +247,7 @@ def slotmachine(Money, Score):
                     multi += multiplier(diag2[0],multi)
 
                 p=n
+                print("")
                 for p in slots:
                     print(p)
                     print("")
@@ -239,36 +365,36 @@ def coin(Money, Score):
                 if risk.isdigit() and (int(risk) in (1,2)):
                     election = int(risk)
                     house_num = random.randint(1,2)
-                    print("Your selection: ",election,"      Result: ",house_num)
+                    print("\nYour selection: ",election,"      Result: ",house_num)
                     match house_num:
                         case 1:
                             if election == house_num:
-                                print("Theres a match with heads you won")
+                                print("\nTheres a match with heads you won\n")
                                 Money += betN
-                                print("You won $",betN, ":)")
+                                print("You won $",betN, ":)\n")
                                 cont()
                                 if Money >= Score:
                                     return Money
                             else:
-                                print("The House beated you with heads")
+                                print("\nThe House beated you with heads\n")
                                 Money -= betN
-                                print("You lose $",betN, ":(")
+                                print("You lose $",betN, ":(\n")
                                 if Money == 0:
                                     return Money
                                 cont()
                             break
                         case 2:
                             if election == house_num:
-                                print("Theres a match with tails you won")
+                                print("\nTheres a match with tails you won\n")
                                 Money += betN
-                                print("You won $",betN, ":)")
+                                print("You won $",betN, ":)\n")
                                 cont()
                                 if Money >= Score:
                                     return Money
                             else:
-                                print("The House beated you with tails")
+                                print("\nThe House beated you with tails\n")
                                 Money -= betN
-                                print("You lose $",betN, ":(")
+                                print("You lose $",betN, ":(\n")
                                 if Money == 0:
                                     return Money
                                 cont()
@@ -286,22 +412,22 @@ def wellcome():
 
 def difficulty(Balance):
     while True:
-        Dificulty = input("Hello, in ALL IN you can only win until you have multiplied your money by: 64, 256 or 1024. Type 1 for Easy Mode. Type 2 for Medium Mode. Type 3 for Hard Mode: ")
+        Dificulty = input("Hello, in ALL IN you can only win until you have multiplied your money by: 64, 256 or 1024.\nType 1 for Easy Mode.\nType 2 for Medium Mode.\nType 3 for Hard Mode.\nDifficulty: ")
         if Dificulty.isdigit():
                 DSelector= int(Dificulty)
                 match DSelector:
                     case 1:
-                        print("You  choose Easy Difficulty")
+                        print("\nYou  choose Easy Difficulty\n")
                         Score_to_beat=64*Balance
                         cont()
                         return Score_to_beat
                     case 2:
-                        print("You  choose Medium")
+                        print("\nYou  choose Medium\n")
                         Score_to_beat=256*Balance
                         cont()
                         return Score_to_beat
                     case 3:
-                        print("You  choose Hard")
+                        print("\nYou  choose Hard\n")
                         Score_to_beat=1024*Balance
                         cont()
                         return Score_to_beat
@@ -318,7 +444,7 @@ def gameloop(Balance, Score):
                 case 1:
                     ui(Balance, Score)
                     print("Now you are entering the Blackjack zone, good luck :)")
-                    print("Rules: Dealer Stops at 17 you may risk it until you have 21. ")
+                    print("Rules:\nDealer Stops at 17 you may risk it until you have 21. ")
                     cont()
                     Balance = blackjack(Balance, Score)
                     if Balance == 0:
@@ -333,7 +459,7 @@ def gameloop(Balance, Score):
                 case 3:
                     ui(Balance, Score)
                     print("Now you are entering the Slot Machine zone, good luck :)")
-                    print("Rules: +++: pays the bet // ***: pays 5 times the bet // ^^^: pays 25 times the bet // $$$: pays 200 times the bet. You win if 3 symbols match horizontally or via the diagonal that passes the middle (5 chances in total). You can win multiple times.")
+                    print("Rules:\nYou win if 3 symbols match horizontally or via the diagonal that passes the middle (5 chances in total).\nYou can win multiple times.\n+++: pays the bet\n***: pays 5 times the bet\n^^^: pays 25 times the bet\n$$$: pays 200 times the bet.\n")
                     cont()
                     Balance = slotmachine(Balance, Score)
                     if Balance == 0:
@@ -346,7 +472,7 @@ def gameloop(Balance, Score):
                 case 4:
                     ui(Balance, Score)
                     print("Now you are entering the Dices zone, good luck :)")
-                    print("House will roll 2 dices, you may select a number between 2 an 12, numbers pay more according to their chances ")
+                    print("Rules:\nHouse will roll 2 dices, you may select a number between 2 an 12, numbers pay more according to the chances.\n2 and 12 pay 34 times the bet.\n3 and 11 pay 16 times the bet.\n4 and 10 pay 10 times the bet.\n5 and 9 pay 7 times the bet.\n6 and 8 pay 5 times the bet\n7 pay 4 times the bet.\n")
                     cont()
                     Balance = dices(Balance, Score)
                     if Balance == 0:
@@ -359,7 +485,7 @@ def gameloop(Balance, Score):
                 case 5:
                     ui(Balance, Score)
                     print("Now you are entering the Coin zone , good luck :)")
-                    print("Rules: A match is a win, diferent faces you loose.")
+                    print("Rules:\nA match is a win, diferent faces you loose.")
                     cont()
                     Balance = coin(Balance, Score)
                     if Balance == 0:
