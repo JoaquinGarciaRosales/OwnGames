@@ -1,8 +1,7 @@
 # Casino vegas
-
-# Nota personal, implementar UI con dinero a conseguir y balance actual
 # Nota personal, implementar hacer el type de "rules" para mostrar las reglas
 # Nota personal, se puede hacer módulo de la validación inicial pero con ¿Rules?
+
 import random
 import os
 
@@ -25,7 +24,6 @@ def ui(money, score):
         print("|Current Balance: $", money, "     You need to get: ",(score-money), "more      ", "Score needed: $", score,)
         print("|__________________________________________________________________________________________________________\n")
         break
-
 
 # El más complicado BLACKJACK
 
@@ -78,7 +76,7 @@ def blackjack(Money, Score):
         initial_size = len(crafted_deck)
         ui(Money, Score)
         bet = input(
-            "Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
+            "Select the amount of the bet (no limits, and put a valid amount) or type NO to leave: ")
         if bet == "NO":
             return Money
         while True:
@@ -133,7 +131,6 @@ def blackjack(Money, Score):
                                                 action = int(election)
                                                 break
                                 break
-
                             case 2:
                                 betN = betN*2
                                 player_ar[2] = crafted_deck.pop()
@@ -198,59 +195,136 @@ def blackjack(Money, Score):
 
 # Second and last to design ROULETTE!!
 roulette_dict = {
-    0: "▣",
-    1: "▢", 2: "■", 3: "▢", 4: "■", 5: "▢", 6: "■",
-    7: "▢", 8: "■", 9: "▢", 10: "■", 11: "■", 12: "▢",
-    13: "■", 14: "▢", 15: "■", 16: "▢", 17: "■", 18: "▢",
-    19: "▢", 20: "■", 21: "▢", 22: "■", 23: "▢", 24: "■",
-    25: "▢", 26: "■", 27: "▢", 28: "■", 29: "■", 30: "▢",
-    31: "■", 32: "▢", 33: "■", 34: "▢", 35: "■", 36: "▢"
+    0: "0",
+    1: "■",  2: "▢",  3: "■",  4: "▢",  5: "■",  6: "▢",
+    7: "■",  8: "▢",  9: "■", 10: "▢", 11: "▢", 12: "■",
+    13: "▢", 14: "■", 15: "▢", 16: "■", 17: "▢", 18: "■",
+    19: "■", 20: "▢", 21: "■", 22: "▢", 23: "■", 24: "▢",
+    25: "■", 26: "▢", 27: "■", 28: "▢", 29: "▢", 30: "■",
+    31: "▢", 32: "■", 33: "▢", 34: "■", 35: "▢", 36: "■"
 }
 
 def roulette(Money,Score):
     while True:
         ui(Money, Score)
         bet = input(
-            "Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
+            "Select the amount of the bet (no limits, and put a valid amount) or type NO to leave: ")
         if bet == "NO":
             return Money
         while True:
             if bet.isdigit() and (int(bet) > 0) and (int(bet) <= Money):
-                type_bet = input("Select your number for the bet (only 1 choice).\n1 is for number.\n2 is for color\n3 is for docen\n4 is for odd or even(excluding 0)\n5 is for 1-18 or 19-36\nSelect your bet: ")
-                if type_bet.isdigit() and 1 < int(type_bet) < 13:
+                clear()
+                ui(Money,Score)
+                type_bet = input("Select your number for the bet (only 1 choice).\n1 is for number.\n2 is for color.\n3 is for Dozen.\n4 is for odd or even(excluding 0).\n5 is for 1-18 or 19-36.\nSelect your bet: ")
+                if type_bet.isdigit() and 0 < int(type_bet) < 6:
                     type= int(type_bet)
                     roulette_slot = random.randint(0,36)
                     char = roulette_dict[roulette_slot]
                     match type:
                         case 1:
+                            clear()
+                            ui(Money,Score)
                             while True:
                                 selector = input("Select your number: ")
                                 if selector.isdigit() and -1 < int(selector) < 37:
                                     break
+                            print("\nRoulette stoped at: ",roulette_slot,char,"\n")
+                            if int(selector) == roulette_slot:
+                                Money+=int(bet)*35
+                                print(f"There is a match on {int(selector)} you won: $",(int(bet)*36),"\n")
+                                cont()
+                            else:
+                                Money-=int(bet)
+                                print("No match you lose: $",int(bet),"\n")
+                                cont()
                             break
                         case 2:
+                            clear()
+                            ui(Money,Score)
                             while True:
                                 selector = input("Select your color.\n\n1 is for red.\n\n2 is for black.\n\nColor: ")
                                 if selector.isdigit() and (int(selector) in (1,2)):
                                     break
+                            print("\nRoulette stoped at: ",roulette_slot,char,"\n")
+                            if int(selector) == 1 and char == "■":
+                                Money+=int(bet)
+                                print("There is a match on red you won: $",(int(bet))*2,"\n")
+                                cont()
+                            elif int(selector) == 2 and char == "▢":
+                                Money+=int(bet)
+                                print("There is a match on black won: $",(int(bet))*2,"\n")
+                                cont()
+                            else:
+                                Money-=int(bet)
+                                print("No match you lose: $",int(bet),"\n")
+                                cont()
                             break
                         case 3:
+                            clear()
+                            ui(Money,Score)
                             while True:
-                                selector = input("Select your docen.\n\n1 is for 1-12.\n\n2 is for 13-24.\n\n3 is for 25-36\n\nColor: ")
-                                if selector.isdigit() and (int(selector) in (1,2)):
+                                selector = input("Select your Dozen.\n\n1 is for 1-12.\n\n2 is for 13-24.\n\n3 is for 25-36\n\nDozen: ")
+                                if selector.isdigit() and (int(selector) in (1,2,3)):
                                     break
+                            print("\nRoulette stoped at: ",roulette_slot,char,"\n")
+                            if int(selector) == 1 and 0 < roulette_slot < 13:
+                                Money+=int(bet)*2
+                                print("There is a match in 1-12 you won: $",int(bet)*3,"\n")
+                                cont()
+                            elif int(selector) == 2 and 12 < roulette_slot < 25:
+                                Money+=int(bet)*2
+                                print("There is a match in 13-24 you won: $",int(bet)*3,"\n")
+                                cont()
+                            elif int(selector) == 3 and 24 < roulette_slot < 37:
+                                Money+=int(bet)*2
+                                print("There is a match in 25-36 you won: $",int(bet)*3,"\n")
+                                cont()
+                            else:
+                                Money-=int(bet)
+                                print("No match you lose: $",int(bet),"\n")
+                                cont()
                             break
                         case 4:
+                            clear()
+                            ui(Money,Score)
                             while True:
                                 selector = input("Select your parity.\n\n1 is for odd.\n\n2 is for even.\n\nParity: ")
                                 if selector.isdigit() and (int(selector) in (1,2)):
                                     break
+                            print("\nRoulette stoped at: ",roulette_slot,char,"\n")
+                            if int(selector) == 1 and roulette_slot%2 == 1:
+                                Money+=int(bet)
+                                print("There is a match on odd you won: $",int(bet)*2,"\n")
+                                cont()
+                            elif int(selector) == 2 and roulette_slot%2 == 0 and roulette_slot != 0:
+                                Money+=int(bet)
+                                print("There is a match on even you won: $",int(bet)*2,"\n")
+                                cont()
+                            else:
+                                Money-=int(bet)
+                                print("No match you lose: $",int(bet),"\n")
+                                cont()
                             break
                         case 5:
+                            clear()
+                            ui(Money,Score)
                             while True:
-                                selector = input("Select your half.\n\n1 is for 1-18.\n\n2 is for 19-36.\n\nParity: ")
+                                selector = input("Select your half.\n\n1 is for 1-18.\n\n2 is for 19-36.\n\nHalf: ")
                                 if selector.isdigit() and (int(selector) in (1,2)):
                                     break
+                            print("\nRoulette stoped at: ",roulette_slot,char,"\n")
+                            if int(selector) == 1 and 0 < roulette_slot < 19:
+                                Money+=int(bet)
+                                print("There is a match on 1-18 you won: $",int(bet)*2,"\n")
+                                cont()
+                            elif int(selector) == 2 and 18 < roulette_slot < 37:
+                                Money+=int(bet)
+                                print("There is a match on 19-36 you won: $",int(bet)*2,"\n")
+                                cont()
+                            else:
+                                Money-=int(bet)
+                                print("No match you lose: $",int(bet),"\n")
+                                cont()
                             break
 
 # Tercero en empezar a programar y el tercer juego ¿Quién lo diría?
@@ -258,7 +332,7 @@ def slotmachine(Money, Score):
     while True:
         ui(Money, Score)
         bet = input(
-            "Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
+            "Select the amount of the bet (no limits, and put a valid amount) or type NO to leave: ")
         if bet == "NO":
             return Money
         while True:
@@ -329,7 +403,7 @@ def slotmachine(Money, Score):
                 else:
                     print("You won ", wins, "times! , for a total mult of ", multi, ".")
                     Money += betN*multi
-                    print("You won $", (betN*multi), "Cogratulations")
+                    print("You won $", (betN*multi), "Congratulations")
                     cont()
                     if Money >= Score:
                         return Money
@@ -338,6 +412,9 @@ def slotmachine(Money, Score):
                 break
 
 # Dados, basado en el juego de feria donde el 7 tenía un diablito
+# Dictionary of mult
+dic_mult = {2: 34, 12: 34, 3: 16, 11: 16, 4: 10, 10: 10, 5: 7, 9: 7, 6: 5, 8: 5, 7: 4}
+# Function to win
 def victory(Money, betN, matcher, mult):
     print("There's a match on ", matcher, " you won")
     Money += betN*mult
@@ -348,7 +425,7 @@ def dices(Money, Score):
     while True:
         ui(Money, Score)
         bet = input(
-            "Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
+            "Select the amount of the bet (no limits, and put a valid amount) or type NO to leave: ")
         if bet == "NO":
             return Money
         while True:
@@ -362,53 +439,11 @@ def dices(Money, Score):
                     print("Your number: ", user_inp, "        Dice 1: ", dice1, "   Dice 2: ", dice2)
                     print("Result:      ", (dice1+dice2))
                     if user_num == (dice1+dice2):
-                        match user_num:
-                            case 2:
-                                mult = 34
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 3:
-                                mult = 16
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 4:
-                                mult = 10
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 5:
-                                mult = 7
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 6:
-                                mult = 5
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 7:
-                                mult = 4
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 8:
-                                mult = 5
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 9:
-                                mult = 7
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 10:
-                                mult = 10
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 11:
-                                mult = 16
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
-                            case 12:
-                                mult = 34
-                                Money = victory(Money, betN, user_num, mult)
-                                cont()
+                        mult = dic_mult[user_num]
+                        Money = victory(Money, betN, user_num, mult)
                         if Money >= Score:
                             return Money
+                        cont()
                         break
                     else:
                         print("There is no match, the house won")
@@ -426,7 +461,7 @@ def coin(Money, Score):
     while True:
         ui(Money, Score)
         bet = input(
-            "Select the ammount of the bet (no limits, and put a valid ammount) or type NO to leave: ")
+            "Select the amount of the bet (no limits, and put a valid amount) or type NO to leave: ")
         if bet == "NO":
             return Money
         while True:
@@ -440,14 +475,14 @@ def coin(Money, Score):
                     match house_num:
                         case 1:
                             if election == house_num:
-                                print("\nTheres a match with heads you won\n")
+                                print("\nThere's a match with heads you won\n")
                                 Money += betN
                                 print("You won $", betN, ":)\n")
                                 cont()
                                 if Money >= Score:
                                     return Money
                             else:
-                                print("\nThe House beated you with heads\n")
+                                print("\nThe House beat you with heads\n")
                                 Money -= betN
                                 print("You lose $", betN, ":(\n")
                                 if Money == 0:
@@ -456,14 +491,14 @@ def coin(Money, Score):
                             break
                         case 2:
                             if election == house_num:
-                                print("\nTheres a match with tails you won\n")
+                                print("\nThere's a match with tails you won\n")
                                 Money += betN
                                 print("You won $", betN, ":)\n")
                                 cont()
                                 if Money >= Score:
                                     return Money
                             else:
-                                print("\nThe House beated you with tails\n")
+                                print("\nThe House beat you with tails\n")
                                 Money -= betN
                                 print("You lose $", betN, ":(\n")
                                 if Money == 0:
@@ -474,10 +509,10 @@ def coin(Money, Score):
                 break
 
 
-def wellcome():
+def Welcome():
     while True:
         Dbalance = input(
-            "Wellcome to Las Vegas, type your money (all the numbers typed must be possitive integers and all must be in the provided range): ")
+            "Welcome to Las Vegas, type your money (all the numbers typed must be positive integers and all must be in the provided range): ")
         if Dbalance.isdigit():
             Mbalance = int(Dbalance)
             if Mbalance > 0:
@@ -520,8 +555,7 @@ def gameloop(Balance, Score):
             match gameN:
                 case 1:
                     ui(Balance, Score)
-                    print("Now you are entering the Blackjack zone, good luck :)")
-                    print("Rules:\nDealer Stops at 17 you may risk it until you have 21. ")
+                    print("Now you are entering the Blackjack zone, good luck :)\nRules:\nDealer Stops at 17 you may risk it until you have 21. ")
                     cont()
                     Balance = blackjack(Balance, Score)
                     if Balance == 0:
@@ -532,7 +566,7 @@ def gameloop(Balance, Score):
                         break
                     print("You managed to get out with: $", Balance)
                 case 2:
-                    print("Now you are entering the Roulette zone, good luck :)\nRules:\nThis is an european roulette you can bet in any number from 0 to 36, on any color between red and black, on any docen, on odd number or even, and 1-18 or 19-36")
+                    print("Now you are entering the Roulette zone, good luck :)\nRules:\nThis is an european roulette you can bet in any number from 0 to 36, on any color between red and black, on any Dozen, on odd number or even, and 1-18 or 19-36")
                     cont()
                     Balance = roulette(Balance,Score)
                 case 3:
@@ -549,8 +583,7 @@ def gameloop(Balance, Score):
                     print("You managed to get out with: $", Balance)
                 case 4:
                     ui(Balance, Score)
-                    print("Now you are entering the Dices zone, good luck :)")
-                    print("Rules:\nHouse will roll 2 dices, you may select a number between 2 an 12, numbers pay more according to the chances.\n2 and 12 pay 34 times the bet.\n3 and 11 pay 16 times the bet.\n4 and 10 pay 10 times the bet.\n5 and 9 pay 7 times the bet.\n6 and 8 pay 5 times the bet\n7 pay 4 times the bet.\n")
+                    print("Now you are entering the Dices zone, good luck :)\nRules:\nHouse will roll 2 dices, you may select a number between 2 an 12, numbers pay more according to the chances.\n2 and 12 pay 34 times the bet.\n3 and 11 pay 16 times the bet.\n4 and 10 pay 10 times the bet.\n5 and 9 pay 7 times the bet.\n6 and 8 pay 5 times the bet\n7 pay 4 times the bet.\n")
                     cont()
                     Balance = dices(Balance, Score)
                     if Balance == 0:
@@ -562,8 +595,7 @@ def gameloop(Balance, Score):
                     print("You managed to get out with: $", Balance)
                 case 5:
                     ui(Balance, Score)
-                    print("Now you are entering the Coin zone , good luck :)")
-                    print("Rules:\nA match is a win, diferent faces you loose.")
+                    print("Now you are entering the Coin zone , good luck :)\nRules:\nA match is a win, different faces you lose.")
                     cont()
                     Balance = coin(Balance, Score)
                     if Balance == 0:
@@ -576,11 +608,9 @@ def gameloop(Balance, Score):
                 case _:
                     continue
 
-
 def main():
-    Balance = wellcome()
+    Balance = Welcome()
     beat_score = difficulty(Balance)
     Balance = gameloop(Balance, beat_score)
 
 main()
-
