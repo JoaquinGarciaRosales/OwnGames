@@ -35,6 +35,9 @@ def print_state(Money, Score):
         return 0
     elif Money >= Score:
         print("\nYou win, the casino is broke now :(. Now you have: $", Money,"\n")
+        for i in range(Money):
+            print("$", end="")
+        print("\n\n")
         return 0
     else:
         print("\nYou managed to get out with: $", Money,"\n")
