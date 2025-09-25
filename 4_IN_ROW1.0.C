@@ -4,6 +4,8 @@
 #define ROW 6
 #define COLUMN 7
 
+int getInt();
+
 void confirmation();
 
 void clear();
@@ -25,12 +27,11 @@ int main(){
 }
 
 void confirmation(){
-	char confirm;
-	confirm = '0';
+	int confirm = 0;
 	do {
 		printf("\nPRESS 1 AND ENTER TO CONTINUE: ");
-		scanf("%c", &confirm);
-	} while (confirm != '1');
+		confirm = getInt();
+	} while (confirm != 1);
 }
 
 void printer(char board[ROW][COLUMN]){
@@ -54,7 +55,7 @@ void gameLoop(char board[ROW][COLUMN]){
    	
    	do{
    		printf("Player %d make your move(select a number between 1 and 7):", ((turn % 2) + 1));
-   		scanf("%d", &selection);
+   		selection = getInt();
 		} while(board[0][selection-1] != '_' or selection < 1 or selection > 7);
    	
    	
@@ -167,7 +168,7 @@ int validator(char board[ROW][COLUMN],int turn){
 	
 	return 0;
 }
-
+// Instruccoines especiales
 void clear() {
 	#ifdef _WIN32
    	system("cls");
@@ -175,3 +176,21 @@ void clear() {
    	system("clear");
 	#endif
 }
+
+int getInt(){
+	int entry;
+	char c;
+   int num;
+
+   while (1) {
+      entry = scanf("%d%c", &num, &c);
+      if (entry == 2 && c == '\n') {
+         return num;
+      } 
+		else {
+			printf("Invalid num, try again: ");
+         while ((c = getchar()) != '\n' && c != EOF);
+      }
+   }
+}
+
