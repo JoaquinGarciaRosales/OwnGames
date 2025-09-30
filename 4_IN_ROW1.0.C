@@ -56,7 +56,7 @@ void gameLoop(char board[ROW][COLUMN]){
    	do{
    		printf("Player %d make your move(select a number between 1 and 7):", ((turn % 2) + 1));
    		selection = getInt();
-		} while(board[0][selection-1] != '_' or selection < 1 or selection > 7);
+		} while(board[0][selection-1] != '_' || selection < 1 || selection > 7);
    	
    	
    	if (((turn % 2) + 1)==1){
@@ -94,7 +94,7 @@ int validator(char board[ROW][COLUMN],int turn){
 	for (int i = 0; i < ROW; i++){
 		int counter = 1;
 		for (int j = 0; j < COLUMN-1; j++){
-			if (board[i][j] != '_' and board[i][j]==board[i][j+1]){
+			if (board[i][j] != '_' && board[i][j]==board[i][j+1]){
 				counter ++;
 				if (counter == 4){
 					return 1;
@@ -110,7 +110,7 @@ int validator(char board[ROW][COLUMN],int turn){
 	for (int j = 0; j < ROW-1; j++){
 		int counter = 1;
 		for (int i = 0; i < COLUMN; i++){
-			if (board[i][j] != '_' and board[i][j]==board[i+1][j]){
+			if (board[i][j] != '_' && board[i][j]==board[i+1][j]){
 				counter ++;
 				if (counter == 4){
 					return 1;
@@ -124,13 +124,13 @@ int validator(char board[ROW][COLUMN],int turn){
 	
 	if (turn>9){
 		//Diagonales hacia abajo derecha
-		for (int i = 0; i < ROW - 4; i++) {
-	      for (int j = 0; j < COLUMN - 4; j++) {
+		for (int i = 0; i < ROW - 3; i++) {
+	      for (int j = 0; j < COLUMN - 3; j++) {
 	         int counter = 1;
 	         int i1 = i;
 	         int j1 = j;
-	         while (i1 < ROW - 1 and i1 < COLUMN - 1) {
-	            if (board[i1][j1] != '_' and board[i1][j1] == board[i1+1][j1+1]) {
+	         while (i1 < ROW - 1 && i1 < COLUMN - 1) {
+	            if (board[i1][j1] != '_' && board[i1][j1] == board[i1+1][j1+1]) {
 	               counter++;
 	               if (counter == 4) {
 	                  return 1;
@@ -150,8 +150,8 @@ int validator(char board[ROW][COLUMN],int turn){
 	         int counter = 1;
 	         int i1 = i;
 	         int j1 = j;
-	         while (i1 < ROW - 1 and j1 > 0) {
-	            if (board[i1][j1] != '_' and board[i1][j1] == board[i1+1][j1-1]) {
+	         while (i1 < ROW - 1 && j1 > 0) {
+	            if (board[i1][j1] != '_' && board[i1][j1] == board[i1+1][j1-1]) {
 	               counter++;
 	               if (counter == 4) {
 	                  return 1;
@@ -193,4 +193,3 @@ int getInt(){
       }
    }
 }
-
