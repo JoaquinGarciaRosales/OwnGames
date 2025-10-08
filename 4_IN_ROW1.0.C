@@ -54,7 +54,7 @@ void gameLoop(char board[ROW][COLUMN]){
    	int selection;
    	
    	do{
-   		printf("Player %d make your move(select a number between 1 and 7):", ((turn % 2) + 1));
+   		printf("Player %d make your move(select a number between 1 and 7):", ((turn % 2)+1));
    		selection = getInt();
 		} while(board[0][selection-1] != '_' || selection < 1 || selection > 7);
    	
@@ -85,7 +85,7 @@ void gameLoop(char board[ROW][COLUMN]){
 	
 	clear();
    printer(board);
-   printf("\nPlayer %d wins at turn %d.\n", ((turn % 2) + 1), turn);
+   printf("\nPlayer %d wins at turn %d.\n", ((turn + 1) % 2)+1, turn);
 }
 
 int validator(char board[ROW][COLUMN],int turn){
@@ -107,9 +107,9 @@ int validator(char board[ROW][COLUMN],int turn){
 	}
 	
 	//Verticales
-	for (int j = 0; j < ROW-1; j++){
+	for (int j = 0; j < COLUMN; j++){
 		int counter = 1;
-		for (int i = 0; i < COLUMN; i++){
+		for (int i = 0; i < ROW-1; i++){
 			if (board[i][j] != '_' && board[i][j]==board[i+1][j]){
 				counter ++;
 				if (counter == 4){
@@ -193,3 +193,4 @@ int getInt(){
       }
    }
 }
+    
