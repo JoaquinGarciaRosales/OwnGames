@@ -26,7 +26,7 @@ int main(){
 	//validate entry
 	player1_validator(word);
 	
-	//*pendiente función para redimensionar word
+	//*pendiente funciÃ³n para redimensionar word
 	
 	int tried_words_counter=1;
 	char *tried_words;
@@ -149,7 +149,7 @@ void player1_validator(char *word){
 		validator = 1;
 		printf("Insert the secret word (only lowercase caracters): ");
 		scanf("%s", word);
-			//*pendiente función para no admitir mas de 45 caracteres
+			//*pendiente funciÃ³n para no admitir mas de 45 caracteres
 			
 		for (int i = 0; *(word + i) != '\0'; i++){
 			if (is_word(*(word+i))==0){
