@@ -28,13 +28,15 @@ int main(){
 	
 	//*pendiente función para redimensionar word
 	
-	int tried_words_counter=1;
+	int tried_words_counter=0;
 	char *tried_words;
 	tried_words = (char *)malloc(1 * sizeof(char));
+	tried_words[0]='\0';
 	
-	int guessed_words_counter=1;
+	int guessed_words_counter=0;
 	char *guessed_words;
 	guessed_words = (char *)malloc(1 * sizeof(char));
+	guessed_words[0]='\0';
 	
 	int tries = 6;
 	
@@ -43,9 +45,19 @@ int main(){
 		//-------------------- UI
 		clear();
 		printf("___________________________________________________________________________\n");
-		printf("| Lifes remain %d                                                         |\n", tries);
+		printf("| Lines remaining %d                                                         |\n", tries);
 		printf("___________________________________________________________________________\n\n");
+		printf("Tried Words:");
+		if (*(tried_words)!='\0'){
+			int try_printed= 0;
+			do {
+				printf("  %c  ", *(tried_words+try_printed));
+				try_printed++;
+			} while(*(tried_words+(try_printed))!='\0');
+			printf("\n\n");
+		}
 		hangman(tries);
+		
 		int printed_spaces=0;
 		for (int i = 0; *(word + i) != '\0'; i++){
 			
@@ -54,16 +66,16 @@ int main(){
 			for (int j=0; *(guessed_words + j) != '\0'; j++){
 				if(*(guessed_words + j)==*(word + i)){
 					found = 1;
-					printf("%c", *(word + i));
+					printf(" %c ", *(word + i));
 					break;
 				}
 			}
 			if (found==0 && *(word + i) != '\0'){
 				printed_spaces++;
-				printf("_");
+				printf(" _ ");
 			}
 		}
-		printf("\n");
+		printf("\n\n");
 		//-------------------- UI
 		
 		// verify victory
@@ -79,15 +91,26 @@ int main(){
 		
 		do {
 			int valid_letter=1;
-			printf("Insert a letter to guess: ");
+			printf("Insert a letter to guess (onlylowercase characters): ");
 			scanf(" %c", &guess);
 		// *pendiente hacer que solo se acepte 1 caracter	
 			//generar una espera
 			int c;
 			while ((c = getchar()) != '\n' && c != EOF);
 			
+			if (is_word(guess)==0){
+				valid_letter=0;
+				printf("\nInvalid input, try again\n");
+			}
 			for (int i=0; *(tried_words+i)!='\0';i++){
 				if (*(tried_words+i)==guess){
+					valid_letter=0;
+					printf("\nAlready tried letter try again\n");
+					break;
+				}
+			}
+			for (int i=0; *(guessed_words+i)!='\0';i++){
+				if (*(guessed_words+i)==guess){
 					valid_letter=0;
 					printf("\nAlready tried letter try again\n");
 					break;
@@ -99,19 +122,20 @@ int main(){
 		} while (1);
 		
 		
-		printf("Used leter %c\n", guess);
+		printf("Used letter %c\n", guess);
 		
-		tried_words[tried_words_counter - 1] = guess;
+		tried_words[tried_words_counter] = guess;
 		tried_words_counter++;
-		tried_words= (char *) realloc(tried_words, tried_words_counter * sizeof(char));
-		
+		tried_words= (char *) realloc(tried_words, (tried_words_counter+1) * sizeof(char));
+		tried_words[tried_words_counter]='\0';
 		
 		int success = 0;
 		for (int i=0; *(word+i)!='\0'; i++){
 			if (guess == *(word+i)){
-				guessed_words[guessed_words_counter - 1] = guess;
+				guessed_words[guessed_words_counter] = guess;
 				guessed_words_counter++;
-				guessed_words= (char *) realloc(guessed_words, guessed_words_counter * sizeof(char));
+				guessed_words= (char *) realloc(guessed_words, (guessed_words_counter+1) * sizeof(char));
+				guessed_words[guessed_words_counter]='\0';
 				success = 1;
 				printf("You guessed a letter.\n");
 				break;
@@ -133,7 +157,7 @@ int main(){
 	
 	if (tries == 0){
 		hangman(tries);
-		printf("You loose.");
+		printf("You lose the secret word was: %s", word);
 	}
 	
 	free(word);
@@ -147,14 +171,14 @@ void player1_validator(char *word){
 	int validator = 0;
 	do {
 		validator = 1;
-		printf("Insert the secret word (only lowercase caracters): ");
-		scanf("%s", word);
+		printf("Insert the secret word with only lowercase characters and maximum of 45 caracters (further ones won't be taken into account): ");
+		scanf("%45s", word);
 			//*pendiente función para no admitir mas de 45 caracteres
 			
 		for (int i = 0; *(word + i) != '\0'; i++){
 			if (is_word(*(word+i))==0){
 				validator = 0;
-				printf("Unvalid entry, please try again.\n");
+				printf("Invalid entry, please try again.\n");
 				break;
 			}
 		}
@@ -162,8 +186,8 @@ void player1_validator(char *word){
 	clear();
 }
 
-void hangman(int lifes){
-	switch(lifes){
+void hangman(int lives){
+	switch(lives){
 		case 6:
 			printf(" |\n\n");
 			break;
