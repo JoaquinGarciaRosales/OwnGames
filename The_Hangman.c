@@ -8,7 +8,7 @@ int is_word(char c);
 
 void clear();
 
-void player1_validator(char *word);
+int player1_validator(char *word);
 
 void hangman(int lifes);
 
@@ -24,9 +24,10 @@ int main(){
 	}
 	
 	//validate entry
-	player1_validator(word);
+	int new_size=player1_validator(word);
 	
-	//*pendiente función para redimensionar word
+	word= (char *) realloc(word, (new_size+1) * sizeof(char));
+	word[new_size]='\0';
 	
 	int tried_words_counter=0;
 	char *tried_words;
@@ -45,9 +46,9 @@ int main(){
 		//-------------------- UI
 		clear();
 		printf("___________________________________________________________________________\n");
-		printf("| Lines remaining %d                                                         |\n", tries);
+		printf("| Lives remaining %d                                                         |\n", tries);
 		printf("___________________________________________________________________________\n\n");
-		printf("Tried Words:");
+		printf("Used letters:");
 		if (*(tried_words)!='\0'){
 			int try_printed= 0;
 			do {
@@ -93,26 +94,35 @@ int main(){
 			int valid_letter=1;
 			printf("Insert a letter to guess (onlylowercase characters): ");
 			scanf(" %c", &guess);
-		// *pendiente hacer que solo se acepte 1 caracter	
-			//generar una espera
-			int c;
-			while ((c = getchar()) != '\n' && c != EOF);
 			
+			//Verificacion de caracter unico
+			int c;
+			c = getchar();
+			
+			if (c != '\n'){
+				while (c != '\n' && c != EOF) {
+	            c = getchar();
+	      	}
+				printf("\nInvalid input (only one character allowed), try again.\n");
+			   continue;
+			}
+			
+			//verificación de caracter numérico
 			if (is_word(guess)==0){
 				valid_letter=0;
-				printf("\nInvalid input, try again\n");
+				printf("\nInvalid input, try again.\n");
 			}
 			for (int i=0; *(tried_words+i)!='\0';i++){
 				if (*(tried_words+i)==guess){
 					valid_letter=0;
-					printf("\nAlready tried letter try again\n");
+					printf("\nAlready tried letter try again.\n");
 					break;
 				}
 			}
 			for (int i=0; *(guessed_words+i)!='\0';i++){
 				if (*(guessed_words+i)==guess){
 					valid_letter=0;
-					printf("\nAlready tried letter try again\n");
+					printf("\nAlready tried letter try again.\n");
 					break;
 				}
 			}
@@ -167,14 +177,15 @@ int main(){
 	return 0;
 }
 
-void player1_validator(char *word){
+int player1_validator(char *word){
+	int letters_counter = 0;
 	int validator = 0;
+
 	do {
 		validator = 1;
 		printf("Insert the secret word with only lowercase characters and maximum of 45 caracters (further ones won't be taken into account): ");
 		scanf("%45s", word);
-			//*pendiente función para no admitir mas de 45 caracteres
-			
+		
 		for (int i = 0; *(word + i) != '\0'; i++){
 			if (is_word(*(word+i))==0){
 				validator = 0;
@@ -183,7 +194,15 @@ void player1_validator(char *word){
 			}
 		}
 	} while (validator == 0);
+	
+	for (int i = 0; *(word+i)!='\0'; i++){
+		if (is_word(*(word+i))==1){
+			letters_counter ++;
+		}
+	}
+	
 	clear();
+	return letters_counter;
 }
 
 void hangman(int lives){
