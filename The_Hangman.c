@@ -101,8 +101,8 @@ int main(){
 			
 			if (c != '\n'){
 				while (c != '\n' && c != EOF) {
-	            c = getchar();
-	      	}
+	      c = getchar();
+	   }
 				printf("\nInvalid input (only one character allowed), try again.\n");
 			   continue;
 			}
