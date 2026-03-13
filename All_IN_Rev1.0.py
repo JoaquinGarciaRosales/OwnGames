@@ -334,7 +334,9 @@ def roulette(Money,Score):
 
 # MULT FUNC for slots
 def multiplier(rowf, mult):
-    if rowf == "+":
+    if rowf == "☹"
+        mult = 0
+    elif rowf == "+":
         mult = 1
     elif rowf == "*":
         mult = 5
@@ -359,11 +361,13 @@ def slotmachine(Money, Score):
         for i in range(n):
             for j in range(n):
                 randomizer = random.randint(1, 10000)
-                if randomizer < 6001:
+                if randomizer < 1801:
+                    slot = "☹"
+                elif randomizer < 6721:
                     slot = "+"
-                elif randomizer < 8501:
+                elif randomizer < 8771:
                     slot = "*"
-                elif randomizer < 9501:
+                elif randomizer < 9591:
                     slot = "^"
                 else:
                     slot = "$"
