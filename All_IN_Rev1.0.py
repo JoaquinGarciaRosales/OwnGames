@@ -334,7 +334,7 @@ def roulette(Money,Score):
 
 # MULT FUNC for slots
 def multiplier(rowf, mult):
-    if rowf == "☹"
+    if rowf == "☹":
         mult = 0
     elif rowf == "+":
         mult = 1
