@@ -378,19 +378,19 @@ def slotmachine(Money, Score):
 
         # rows
         for row in slots:
-            if all(symbol == row[0] for symbol in row):
+            if all(symbol == row[0] for symbol in row) and row[0] != "☹":
                 wins += 1
                 multi += multiplier(row[0], multi)
 
         # 1diagonal
         diag1 = [slots[i][i] for i in range(n)]
-        if all(symbol == diag1[0] for symbol in diag1):
+        if all(symbol == diag1[0] for symbol in diag1) and diag1[0] != "☹":
             wins += 1
             multi += multiplier(diag1[0], multi)
 
         # 2diagonal
         diag2 = [slots[i][n - 1 - i] for i in range(n)]
-        if all(symbol == diag2[0] for symbol in diag2):
+        if all(symbol == diag2[0] for symbol in diag2) and diag2[0] != "☹":
             wins += 1
             multi += multiplier(diag2[0], multi)
 
@@ -534,7 +534,7 @@ def gameloop(Balance, Score):
                     game_active = print_state(Balance,Score)
                 case 3:
                     ui(Balance, Score)
-                    print("Now you are entering the Slot Machine zone, good luck :)\n\nYou win if 3 symbols match horizontally or via the diagonal that passes the middle (5 chances in total).\nYou can win multiple times.\n+++: pays the bet\n***: pays 5 times the bet\n^^^: pays 25 times the bet\n$$$: pays 200 times the bet.\n")
+                    print("Now you are entering the Slot Machine zone, good luck :)\n\nYou win if 3 symbols match horizontally or via the diagonal that passes the middle (5 chances in total).\nYou can win multiple times.\n☹☹☹: does not count as a win\n+++: pays the bet\n***: pays 5 times the bet\n^^^: pays 25 times the bet\n$$$: pays 200 times the bet.\n")
                     cont()
                     Balance = slotmachine(Balance, Score)
                     game_active = print_state(Balance,Score)
