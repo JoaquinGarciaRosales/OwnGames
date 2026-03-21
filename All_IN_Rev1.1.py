@@ -481,6 +481,82 @@ def coin(Money, Score):
                 break
     return Money
 
+def ui_pollito(Money, Score, bet, hardeness, mult, rounds, loose):
+    ui(Money, Score)
+    if hardeness == 1:
+        hardeness = "Easy"
+    elif hardeness == 2:
+        hardeness = "Medium"
+    elif hardeness == 3:
+        hardeness = "Hard"
+    elif hardeness == 4:
+        hardeness = "Insane"
+    current_price = math.floor(bet*(mult**rounds))
+    print("Your bet: $", bet, "\nRoad hardeness: ", hardeness, "\nCurrent Mult: {:.2f}".format(mult), "\nCurrent Price: $", current_price, "\n")
+    print(" [ | ] "*rounds, end="")
+    if loose == 0:
+        print("  [🐤]  ", end ="")
+    if loose == 1:
+        print("  [🚘]  ", end="")
+    print("  [ | ]  "*5)
+    for i in range(rounds):
+        print("       ", end="")
+    for i in range(rounds,rounds+6):
+        print(f"{mult**i:^9.2f}", end="")
+    print("\n")
+
+def chicken(Money,Score):
+    while Money < Score and Money != 0:
+        ui(Money, Score)
+        bet = bet_val(Money)
+        if bet == "NO":
+            return Money
+        while True:
+            hardeness = input("Select how hard the road is between 1 and 4(harder roads are more rewarded): ")
+            if hardeness.isdigit() and (int(hardeness) in range(1, 5)):
+                selection = int(hardeness)
+                match selection:
+                    case 1:
+                        loose_cap = 21
+                        pass_reward = 1.17
+                    case 2:
+                        loose_cap = 26
+                        pass_reward = 1.28
+                    case 3:
+                        loose_cap = 34
+                        pass_reward = 1.49
+                    case 4:
+                        loose_cap = 50
+                        pass_reward = 1.99
+                break
+        rounds = 0
+        loose = 0
+        while True:
+            ui_pollito(Money, Score, bet, selection, pass_reward, rounds, loose)
+            while True:
+                risk = input("Type 1 to pass the road or 2 to chicken out: ")
+                if risk.isdigit() and (int(risk) in (1, 2)):
+                    break
+            if int(risk) == 1:
+                rounds += 1
+                ui_pollito(Money, Score, bet, selection, pass_reward, rounds, loose)
+                road = random.randint(1, 100)
+                if road > loose_cap:
+                    print("You passed the road and won $", int(bet*pass_reward))
+                else:
+                    loose = 1
+                    ui_pollito(Money, Score, bet, selection, pass_reward, rounds, loose)
+                    print("You lost on the road, you lose $", bet)
+                    Money -= bet
+                    cont()
+                    break
+            else:
+                Money += math.floor(bet*(pass_reward**rounds))
+                print("You chickened out with a reward of $", math.floor(bet*(pass_reward**rounds)))
+                break
+
+    return Money
+            
 # Print wellcome Message && Asking money
 def Welcome():
     while True:
@@ -517,7 +593,7 @@ def gameloop(Balance, Score):
     while game_active != 0:
         ui(Balance, Score)
         Game = input(
-            "Now you are entering the game zone, type: 1 for BlackJack, 2 for Roulette, 3 for Slots, 4 for Dices, 5 for Coin: ")
+            "Now you are entering the game zone, type: 1 for BlackJack, 2 for Roulette, 3 for Slots, 4 for Dices, 5 for Coin, 6 for Chiken: ")
         if Game.isdigit():
             gameN = int(Game)
             match gameN:
@@ -550,6 +626,12 @@ def gameloop(Balance, Score):
                     cont()
                     Balance = coin(Balance, Score)
                     game_active = print_state(Balance,Score)
+                case 6:
+                    ui(Balance, Score)
+                    print("Now you are entering the Chicken zone , good luck :)\nRules:\nThe chicken will try to pass the road, it can be hited with a car, if it passes the road you win, if it gets hit you lose, you can chicken out at any time to get the reward of the passed roads.\nThe harder the road the bigger the reward but also the bigger the chances of getting hit.\nEasy Road: 1.17x reward each cross.\nMedium Road: 1.28x reward each cross.\nHard Road: 1.49x reward each cross.\nInsane Road: 1.99x reward each cross.\n")
+                    cont()
+                    Balance = chicken(Balance, Score)
+                    game_active = print_state(Balance,Score)
                 case _:
                     continue
 
@@ -561,4 +643,5 @@ def main():
 
 # Run execution
 main()
+
 
