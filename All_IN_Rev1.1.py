@@ -509,6 +509,7 @@ def chicken(Money,Score):
     while Money < Score and Money != 0:
         ui(Money, Score)
         bet = bet_val(Money)
+        Money -= bet
         if bet == "NO":
             return Money
         while True:
@@ -537,7 +538,6 @@ def chicken(Money,Score):
                 risk = input("Type 1 to pass the road or 2 to chicken out: ")
                 if risk.isdigit() and (int(risk) in (1, 2)):
                     break
-            Money -= bet
             if int(risk) == 1:
                 rounds += 1
                 ui_pollito(Money, Score, bet, selection, pass_reward, rounds, loose)
