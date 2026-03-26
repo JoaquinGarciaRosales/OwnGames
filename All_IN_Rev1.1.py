@@ -537,22 +537,24 @@ def chicken(Money,Score):
                 risk = input("Type 1 to pass the road or 2 to chicken out: ")
                 if risk.isdigit() and (int(risk) in (1, 2)):
                     break
+            Money -= bet
             if int(risk) == 1:
                 rounds += 1
                 ui_pollito(Money, Score, bet, selection, pass_reward, rounds, loose)
                 road = random.randint(1, 100)
                 if road > loose_cap:
                     print("You passed the road and won $", int(bet*pass_reward))
+                    cont()
                 else:
                     loose = 1
                     ui_pollito(Money, Score, bet, selection, pass_reward, rounds, loose)
                     print("You lost on the road, you lose $", bet)
-                    Money -= bet
                     cont()
                     break
             else:
                 Money += math.floor(bet*(pass_reward**rounds))
                 print("You chickened out with a reward of $", math.floor(bet*(pass_reward**rounds)))
+                cont()
                 break
 
     return Money
