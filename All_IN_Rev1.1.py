@@ -429,6 +429,7 @@ def dices(Money, Score):
         while True:
             user_inp = input("Select your number: ")
             if user_inp.isdigit() and 1 < int(user_inp) < 13:
+                Money -= bet
                 user_num = int(user_inp)
                 dice1 = random.randint(1, 6)
                 dice2 = random.randint(1, 6)
@@ -440,7 +441,6 @@ def dices(Money, Score):
                 else:
                     print("There is no match, the house won")
                     print("You lose $", bet, ":(")
-                    Money -= bet
                 cont()
                 break
     return Money
